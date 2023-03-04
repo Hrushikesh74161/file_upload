@@ -1,0 +1,48 @@
+{% extends '../base.html' %}
+
+{% block title %}File - {{file_name}}{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+<h2> File: {{file_name}}</h2>
+<table class="table">
+    {% for row in data %}
+        <tbody>
+            <tr>
+            {% for col in row %}
+            <td scope="row">{{col}}</td>
+            {% endfor %}
+            </tr>
+        </tbody>
+        {% endfor %}
+</table>
+</div>
+<br>
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a class="button" href="?page=1">
+            <button type="button" class="btn btn-dark">&laquo; first</button>
+        </a>
+        <a class="button" href="?page={{ page_obj.previous_page_number }}">
+            <button type="button" class="btn btn-dark">prev</button>
+        </a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">
+            <button type="button" class="btn btn-dark">next</button>
+        </a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">
+            <button type="button" class="btn btn-dark">last &raquo;</button>
+        </a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}
