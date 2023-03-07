@@ -11,7 +11,10 @@
 {% endif %}
 <form enctype="multipart/form-data" action="{% url 'file_handler:home' %}" method='POST'>
     {% csrf_token %}
-    {{form.as_p}}
+    {% for field, errors in fields %}
+    {{field.label_tag}}
+    {{field}}
+    {% endfor %}
     <button class="btn btn-primary py-2 mb-4 mt-5 fw-bold" type="submit">Submit</button>
 <form>
 <br>

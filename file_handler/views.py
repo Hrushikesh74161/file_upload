@@ -27,6 +27,13 @@ class FileUploadView(FormView):
     form_class = UploadForm
     success_url = reverse_lazy("file_handler:home")
 
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data()
+        # forms have get_context method which is used by the forms as_p, as_div, as_ul etc methods when rendering form
+        # get_context returns {form, fields, hidden_fields, errors}
+        kwargs.update(self.get_form().get_context())
+        return kwargs
+
     def form_valid(self, form):
         file = self.request.FILES["file"]
         path: Path = get_file_path(file, force=True)
@@ -40,19 +47,21 @@ class FileUploadView(FormView):
 
 
 class FileView(ListView):
-    template_name = 'file_handler/file_view.html'
+    template_name = "file_handler/file_view.html"
     paginate_by = 15
-    context_object_name = 'data'
+    context_object_name = "data"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({
-            'file_name': self.kwargs.get('file_name'),
-        })
+        context.update(
+            {
+                "file_name": self.kwargs.get("file_name"),
+            }
+        )
         return context
 
     def get_queryset(self):
-        file_name = self.kwargs.get('file_name')
+        file_name = self.kwargs.get("file_name")
         file_type = file_name.split(".")[-1]
 
         if file_type in settings.ACCEPTED_FILES and file_exists(file_name):
@@ -65,10 +74,8 @@ class FileView(ListView):
 
             return data
         else:
-            raise Exception(f'File not in {settings.ACCEPTED_FILES}')
-        
+            raise Exception(f"File not in {settings.ACCEPTED_FILES}")
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
